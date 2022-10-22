@@ -9,5 +9,9 @@
     "graphql": "^16.6.0",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.3",
+    "ts-node-dev": "^2.0.0"
   }
 }
