@@ -1,14 +1,8 @@
 import {FormEvent, useState} from "react";
-import {gql, useMutation} from "@apollo/client";
-
-const CREATE_USER = gql`
-    mutation($name: String!) {
-        createUser(name: $name) {
-            id
-            name
-        }
-    }
-`;
+import {useMutation} from "@apollo/client";
+import {CREATE_USER} from "../queries/createUser";
+import {GET_USERS} from "../queries/getUsers";
+import {client} from "../lib/apollo";
 
 export function NewUserForm() {
     const [name, setName] = useState('');
@@ -19,7 +13,20 @@ export function NewUserForm() {
         if (!name) return;
 
         await createUser({
-            variables: {name}
+            variables: {name},
+            update: (cache, {data: {createUser}}) => {
+                const {users} = client.readQuery({query: GET_USERS});
+
+                cache.writeQuery({
+                    query: GET_USERS,
+                    data: {
+                        users: [
+                            ...users,
+                            createUser
+                        ]
+                    }
+                });
+            }
         });
     }
 
